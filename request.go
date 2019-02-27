@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-// A Request represents a JSON-RPC request received by the server.
+// Request represents a JSON-RPC request received by the server.
 type Request struct {
 	Version string          `json:"jsonrpc"`
 	Method  string          `json:"method"`
@@ -18,7 +18,8 @@ type Request struct {
 	parsingError bool
 }
 
-// Unmarshal - parse req params to specified structure
+// Unmarshal unmarshal req params to specified structure.
+// Unmarshal will set parse error if unmarshaling failed.
 func (r *Request) Unmarshal(v interface{}) error {
 	if err := json.Unmarshal(r.Params, v); err != nil {
 		r.parsingError = true

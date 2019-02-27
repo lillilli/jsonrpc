@@ -4,7 +4,12 @@ import (
 	"net/http"
 )
 
-// Handler - represents jsonrpc handler
+// Handler represents jsonrpc handler.
+//
+// if your handler return any error, and you don`t use SetInvalidRequestParamsError()
+// response will have code -32603 and message "Internal error"
+//
+// if you use SetInvalidRequestParamsError() response will have code -32602 and message "Invalid params"
 type Handler func(w ResponseWriter, r *Request) error
 
 type httpHandler struct {
@@ -35,7 +40,7 @@ func (h *httpHandler) serveHTTPReq(w http.ResponseWriter, r *http.Request) error
 	return sendResponse(w, responses)
 }
 
-// InvokeMethod invokes JSON-RPC method.
+// HandleMethod handle JSON-RPC method.
 func (h *httpHandler) HandleMethod(r *Request) *response {
 	res := newResponse(r)
 
@@ -45,7 +50,7 @@ func (h *httpHandler) HandleMethod(r *Request) *response {
 		return res
 	}
 
-	if handlerErr := handler(res, r); handlerErr != nil {
+	if handlerErr := handler(res, r); handlerErr != nil && res.Error == nil {
 		if r.parsingError {
 			res.Error = errParse()
 		} else {
@@ -56,7 +61,7 @@ func (h *httpHandler) HandleMethod(r *Request) *response {
 	return res
 }
 
-// TakeMethod takes jsonrpc.Func in MethodRepository.
+// GetMethod returns method handler.
 func (h *httpHandler) GetMethod(r *Request) (Handler, *respError) {
 	if r.Method == "" || r.Version != Version {
 		return nil, errInvalidRequest()

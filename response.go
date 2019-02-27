@@ -5,10 +5,17 @@ import (
 	"net/http"
 )
 
-// ResponseWriter represents response writer interface.
+// ResponseWriter represents JSON-RPC response writer interface.
 type ResponseWriter interface {
+	// SetResponse set response result.
 	SetResponse(v interface{})
+
+	// SetErrorData set response error data.
+	// Error will have -32603 status code and message equal to "Internal error".
 	SetErrorData(v interface{})
+
+	// SetInvalidRequestParamsError set response error to invalid req params.
+	// Error will have -32602 status code and message equal to "Invalid params".
 	SetInvalidRequestParamsError(data interface{})
 }
 
@@ -19,7 +26,6 @@ func newErrorResponse(err *respError) *response {
 	}
 }
 
-// newResponse generates a JSON-RPC response.
 func newResponse(r *Request) *response {
 	return &response{
 		ID:      r.ID,
@@ -35,18 +41,15 @@ type response struct {
 	ID      interface{} `json:"id"`
 }
 
-// SetResponse - set response result
 func (r *response) SetResponse(v interface{}) {
 	r.Result = v
 }
 
-// SetInvalidRequestParamsError - set response error to invalid req params
 func (r *response) SetInvalidRequestParamsError(data interface{}) {
 	r.Error = errInvalidParams()
 	r.Error.Data = data
 }
 
-// SetErrorData - set response error data
 func (r *response) SetErrorData(v interface{}) {
 	if r.Error == nil {
 		r.Error = errInternal()

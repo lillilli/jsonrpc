@@ -4,18 +4,20 @@ import (
 	"net/http"
 )
 
-// Server - represents jsonrpc server interface
+// Server represents jsonrpc server interface.
 type Server interface {
+	// Handle set up method handler.
 	Handle(method string, handler Handler)
+
+	// Handler return standart net/http handler.
 	Handler() http.Handler
 }
 
-// A MethodRepository has JSON-RPC method functions.
 type server struct {
 	routes map[string]Handler
 }
 
-// NewServer - returns new jsonrpc server instance.
+// NewServer returns new jsonrpc server instance.
 func NewServer() Server {
 	return &server{
 		routes: make(map[string]Handler),

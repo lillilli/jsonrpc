@@ -16,10 +16,10 @@ const (
 )
 
 type (
-	// A errorCode by JSON-RPC 2.0.
+	// A errorCode by JSON-RPC v2.0.
 	errorCode int
 
-	// An Error is a wrapper for a JSON interface value.
+	// respError is a wrapper for a JSON interface value.
 	respError struct {
 		Code    errorCode   `json:"code"`
 		Message string      `json:"message"`

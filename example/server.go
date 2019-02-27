@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"log"
@@ -35,7 +36,7 @@ func healthHandler(w jsonrpc.ResponseWriter, r *jsonrpc.Request) error {
 	// will return "error": {"code": -32602, "message": "Internal error", "data": "message must be provided"}
 	if params.Message == "" {
 		w.SetInvalidRequestParamsError("message must be provided")
-		return nil
+		return errors.New("lol")
 	}
 
 	// will return "error": {"code": -32603, "message": "Internal error", "data": "message too short"}

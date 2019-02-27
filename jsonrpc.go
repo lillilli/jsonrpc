@@ -1,7 +1,7 @@
 package jsonrpc
 
 const (
-	// Version is JSON-RPC 2.0.
+	// Version is JSON-RPC 2.0 version string.
 	Version = "2.0"
 
 	batchRequestKey  = '['
