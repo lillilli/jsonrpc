@@ -47,9 +47,9 @@ func (h *httpHandler) HandleMethod(r *Request) *response {
 
 	if handlerErr := handler(res, r); handlerErr != nil {
 		if r.parsingError {
-			res.Error = ErrParse()
+			res.Error = errParse()
 		} else {
-			res.Error = ErrInternal()
+			res.Error = errInternal()
 		}
 	}
 
@@ -57,14 +57,14 @@ func (h *httpHandler) HandleMethod(r *Request) *response {
 }
 
 // TakeMethod takes jsonrpc.Func in MethodRepository.
-func (h *httpHandler) GetMethod(r *Request) (Handler, *Error) {
+func (h *httpHandler) GetMethod(r *Request) (Handler, *respError) {
 	if r.Method == "" || r.Version != Version {
-		return nil, ErrInvalidRequest()
+		return nil, errInvalidRequest()
 	}
 
 	handler, ok := h.routes[r.Method]
 	if !ok {
-		return nil, ErrMethodNotFound()
+		return nil, errMethodNotFound()
 	}
 
 	return handler, nil

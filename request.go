@@ -29,21 +29,21 @@ func (r *Request) Unmarshal(v interface{}) error {
 }
 
 // parseRequest parses a HTTP request to JSON-RPC request.
-func parseRequest(r *http.Request) (requests []*Request, reqParseError *Error) {
+func parseRequest(r *http.Request) (requests []*Request, reqParseError *respError) {
 	// check for content type
 	if !strings.HasPrefix(r.Header.Get(contentTypeKey), contentTypeValue) {
-		return requests, ErrInvalidRequest()
+		return requests, errInvalidRequest()
 	}
 
 	defer func(r *http.Request) {
 		if err := r.Body.Close(); err != nil {
-			reqParseError = ErrInternal()
+			reqParseError = errInternal()
 		}
 	}(r)
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		return requests, ErrInvalidRequest()
+		return requests, errInvalidRequest()
 	}
 
 	// check for batch
@@ -56,22 +56,22 @@ func parseRequest(r *http.Request) (requests []*Request, reqParseError *Error) {
 	return requests, reqParseError
 }
 
-func unmarshalBatchReq(b []byte) ([]*Request, *Error) {
+func unmarshalBatchReq(b []byte) ([]*Request, *respError) {
 	var rs []*Request
 
 	if err := json.Unmarshal(b, &rs); err != nil {
-		return nil, ErrParse()
+		return nil, errParse()
 	}
 
 	return rs, nil
 }
 
-func unmarshalReq(b []byte) ([]*Request, *Error) {
+func unmarshalReq(b []byte) ([]*Request, *respError) {
 	rs := make([]*Request, 1)
 	req := new(Request)
 
 	if err := json.Unmarshal(b, &req); err != nil {
-		return nil, ErrParse()
+		return nil, errParse()
 	}
 
 	rs[0] = req

@@ -3,71 +3,71 @@ package jsonrpc
 import "fmt"
 
 const (
-	// ErrorCodeParse is parse error code.
-	ErrorCodeParse ErrorCode = -32700
-	// ErrorCodeInvalidRequest is invalid request error code.
-	ErrorCodeInvalidRequest ErrorCode = -32600
-	// ErrorCodeMethodNotFound is method not found error code.
-	ErrorCodeMethodNotFound ErrorCode = -32601
-	// ErrorCodeInvalidParams is invalid params error code.
-	ErrorCodeInvalidParams ErrorCode = -32602
-	// ErrorCodeInternal is internal error code.
-	ErrorCodeInternal ErrorCode = -32603
+	// errorCodeParse is parse error code.
+	errorCodeParse errorCode = -32700
+	// errorCodeInvalidRequest is invalid request error code.
+	errorCodeInvalidRequest errorCode = -32600
+	// errorCodeMethodNotFound is method not found error code.
+	errorCodeMethodNotFound errorCode = -32601
+	// errorCodeInvalidParams is invalid params error code.
+	errorCodeInvalidParams errorCode = -32602
+	// errorCodeInternal is internal error code.
+	errorCodeInternal errorCode = -32603
 )
 
 type (
-	// A ErrorCode by JSON-RPC 2.0.
-	ErrorCode int
+	// A errorCode by JSON-RPC 2.0.
+	errorCode int
 
 	// An Error is a wrapper for a JSON interface value.
-	Error struct {
-		Code    ErrorCode   `json:"code"`
+	respError struct {
+		Code    errorCode   `json:"code"`
 		Message string      `json:"message"`
 		Data    interface{} `json:"data,omitempty"`
 	}
 )
 
 // Error implements error interface.
-func (e *Error) Error() string {
+func (e *respError) Error() string {
 	return fmt.Sprintf("jsonrpc: code: %d, message: %s, data: %+v", e.Code, e.Message, e.Data)
 }
 
-// ErrParse returns parse error.
-func ErrParse() *Error {
-	return &Error{
-		Code:    ErrorCodeParse,
+// errParse returns parse error.
+func errParse() *respError {
+	return &respError{
+		Code:    errorCodeParse,
 		Message: "Parse error",
 	}
 }
 
-// ErrInvalidRequest returns invalid request error.
-func ErrInvalidRequest() *Error {
-	return &Error{
-		Code:    ErrorCodeInvalidRequest,
+// errInvalidRequest returns invalid request error.
+func errInvalidRequest() *respError {
+	return &respError{
+		Code:    errorCodeInvalidRequest,
 		Message: "Invalid Request",
 	}
 }
 
-// ErrMethodNotFound returns method not found error.
-func ErrMethodNotFound() *Error {
-	return &Error{
-		Code:    ErrorCodeMethodNotFound,
+// errMethodNotFound returns method not found error.
+func errMethodNotFound() *respError {
+	return &respError{
+		Code:    errorCodeMethodNotFound,
 		Message: "Method not found",
 	}
 }
 
-// ErrInvalidParams returns invalid params error.
-func ErrInvalidParams() *Error {
-	return &Error{
-		Code:    ErrorCodeInvalidParams,
+// errInvalidParams returns invalid params error.
+func errInvalidParams() *respError {
+	return &respError{
+		Code:    errorCodeInvalidParams,
 		Message: "Invalid params",
 	}
 }
 
-// ErrInternal returns internal error.
-func ErrInternal() *Error {
-	return &Error{
-		Code:    ErrorCodeInternal,
+// errInternal returns internal error.
+func errInternal() *respError {
+	return &respError{
+		Code:    errorCodeInternal,
 		Message: "Internal error",
 	}
 }

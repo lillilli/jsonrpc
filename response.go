@@ -9,9 +9,10 @@ import (
 type ResponseWriter interface {
 	SetResponse(v interface{})
 	SetErrorData(v interface{})
+	SetInvalidRequestParamsError(data interface{})
 }
 
-func newErrorResponse(err *Error) *response {
+func newErrorResponse(err *respError) *response {
 	return &response{
 		Version: Version,
 		Error:   err,
@@ -30,7 +31,7 @@ func newResponse(r *Request) *response {
 type response struct {
 	Version string      `json:"jsonrpc"`
 	Result  interface{} `json:"result,omitempty"`
-	Error   *Error      `json:"error,omitempty"`
+	Error   *respError  `json:"error,omitempty"`
 	ID      interface{} `json:"id"`
 }
 
@@ -39,10 +40,16 @@ func (r *response) SetResponse(v interface{}) {
 	r.Result = v
 }
 
+// SetInvalidRequestParamsError - set response error to invalid req params
+func (r *response) SetInvalidRequestParamsError(data interface{}) {
+	r.Error = errInvalidParams()
+	r.Error.Data = data
+}
+
 // SetErrorData - set response error data
 func (r *response) SetErrorData(v interface{}) {
 	if r.Error == nil {
-		r.Error = ErrInternal()
+		r.Error = errInternal()
 	}
 
 	r.Error.Data = v
